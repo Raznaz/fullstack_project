@@ -1,9 +1,10 @@
+require('dotenv').config();
 const express = require('express');
 const errorHandling = require('./middleware/errorHandling');
 const allRouters = require('./routes');
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 7000;
 
 app.use(express.json());
 app.use('/api', allRouters);
