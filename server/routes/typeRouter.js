@@ -1,9 +1,9 @@
 const express = require('express');
-const TypeController = require('../controllers/typeController');
+const typeController = require('../controllers/typeController');
 const router = express.Router();
 
-router.get('/', TypeController.getAllTypes);
-router.post('/', TypeController.create);
-router.delete('/:id', TypeController.remove);
+router.get('/', typeController.getAllTypes);
+router.post('/', typeController.create);
+router.delete('/:id', typeController.remove);
 
 module.exports = router;

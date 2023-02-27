@@ -1,15 +1,15 @@
 class DeviceController {
-	static getAllDevices(req, res) {
+	getAllDevices(req, res) {
 		res.status(200).json([{ name: 'Headphones' }]);
 	}
 
-	static create(req, res) {
+	create(req, res) {
 		res.status(200).json('CREATE DEVICE');
 	}
 
-	static remove(req, res) {
+	remove(req, res) {
 		res.status(200).json('REMOVE DEVICE');
 	}
 }
 
-module.exports = DeviceController;
+module.exports = new DeviceController();

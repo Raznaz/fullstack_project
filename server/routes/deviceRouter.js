@@ -1,11 +1,10 @@
 const express = require('express');
-const DeviceController = require('../controllers/deviceController');
-const { route } = require('./userRouter');
+const deviceController = require('../controllers/deviceController');
 
 const router = express.Router();
 
-router.get('/', DeviceController.getAllDevices);
-router.post('/', DeviceController.create);
-router.delete('/', DeviceController.remove);
+router.get('/', deviceController.getAllDevices);
+router.post('/', deviceController.create);
+router.delete('/', deviceController.remove);
 
 module.exports = router;
