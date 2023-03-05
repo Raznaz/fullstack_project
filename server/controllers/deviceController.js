@@ -21,6 +21,10 @@ class DeviceController {
 				devices = await Device.findAll({ where: { typeId } });
 			}
 
+			if (typeId && brandId) {
+				devices = await Device.findAll({ where: { typeId, brandId } });
+			}
+
 			return res.status(200).json(devices);
 		} catch (error) {
 			next(ApiError.badRequest(error.message));
@@ -32,8 +36,8 @@ class DeviceController {
 	async getOneDevice(req, res, next) {
 		try {
 			const { id } = req.params;
-
-			const currentDevice = Device.findOne({ where: { id: 1 } });
+			console.log('😀', id);
+			const currentDevice = await Device.findOne({ where: { id } });
 
 			return res.status(200).json(currentDevice);
 		} catch (error) {
