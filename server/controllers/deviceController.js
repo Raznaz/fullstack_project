@@ -1,25 +1,66 @@
 const ApiError = require('../error/apiError');
-const { Brand } = require('../models/models');
+const { Brand, Device } = require('../models/models');
+const path = require('path');
+const uuid = require('uuid');
 
 class DeviceController {
-	getAllDevices(req, res) {
-		res.status(200).json([{ name: 'Headphones' }]);
+	async getAllDevices(req, res, next) {
+		try {
+			let devices = [];
+			const { brandId, typeId } = req.query;
+
+			if (!brandId && !typeId) {
+				devices = await Device.findAll();
+			}
+
+			if (brandId && !typeId) {
+				devices = await Device.findAll({ where: { brandId } });
+			}
+
+			if (typeId && !brandId) {
+				devices = await Device.findAll({ where: { typeId } });
+			}
+
+			return res.status(200).json(devices);
+		} catch (error) {
+			next(ApiError.badRequest(error.message));
+		}
+
+		return res.status(200).json([{ name: 'Headphones' }]);
 	}
 
-	getOneDevice(req, res, next) {
-		res.status(200).json({ name: 'ONE DEVICE' });
+	async getOneDevice(req, res, next) {
+		try {
+			const { id } = req.params;
+
+			const currentDevice = Device.findOne({ where: { id: 1 } });
+
+			return res.status(200).json(currentDevice);
+		} catch (error) {
+			next(ApiError.badRequest(error.message));
+		}
 	}
 
 	async create(req, res, next) {
-		const { name } = req.body;
+		try {
+			const { name, price, brandId, typeId } = req.body;
+			const { img } = req.files;
+			let fileName = uuid.v4() + '.jpg';
 
-		if (!name) {
-			next(ApiError.badRequest('🥴 Name brand is empty'));
+			img.mv(path.resolve(__dirname, '..', 'static', fileName));
+
+			const device = await Device.create({
+				name,
+				price,
+				brandId,
+				typeId,
+				img: fileName,
+			});
+
+			return res.status(200).json(device);
+		} catch (error) {
+			next(ApiError.badRequest(error.message));
 		}
-
-		const brandName = await Brand.create({ name });
-
-		res.status(200).json(brandName);
 	}
 
 	remove(req, res) {
