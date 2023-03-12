@@ -1,5 +1,5 @@
 const ApiError = require('../error/apiError');
-const { Brand, Device } = require('../models/models');
+const { Brand, Device, DeviceInfo } = require('../models/models');
 const path = require('path');
 const uuid = require('uuid');
 
@@ -7,22 +7,39 @@ class DeviceController {
 	async getAllDevices(req, res, next) {
 		try {
 			let devices = [];
-			const { brandId, typeId } = req.query;
+			let { brandId, typeId, limit, page } = req.query;
+
+			page = page || 1;
+			limit = limit || 9;
+
+			let offset = page * limit - limit;
 
 			if (!brandId && !typeId) {
-				devices = await Device.findAll();
+				devices = await Device.findAndCountAll({ limit, offset });
 			}
 
 			if (brandId && !typeId) {
-				devices = await Device.findAll({ where: { brandId } });
+				devices = await Device.findAndCountAll({
+					where: { brandId },
+					limit,
+					offset,
+				});
 			}
 
 			if (typeId && !brandId) {
-				devices = await Device.findAll({ where: { typeId } });
+				devices = await Device.findAndCountAll({
+					where: { typeId },
+					limit,
+					offset,
+				});
 			}
 
 			if (typeId && brandId) {
-				devices = await Device.findAll({ where: { typeId, brandId } });
+				devices = await Device.findAndCountAll({
+					where: { typeId, brandId },
+					limit,
+					offset,
+				});
 			}
 
 			return res.status(200).json(devices);
@@ -33,21 +50,9 @@ class DeviceController {
 		return res.status(200).json([{ name: 'Headphones' }]);
 	}
 
-	async getOneDevice(req, res, next) {
-		try {
-			const { id } = req.params;
-			console.log('😀', id);
-			const currentDevice = await Device.findOne({ where: { id } });
-
-			return res.status(200).json(currentDevice);
-		} catch (error) {
-			next(ApiError.badRequest(error.message));
-		}
-	}
-
 	async create(req, res, next) {
 		try {
-			const { name, price, brandId, typeId } = req.body;
+			const { name, price, brandId, typeId, info } = req.body;
 			const { img } = req.files;
 			let fileName = uuid.v4() + '.jpg';
 
@@ -61,14 +66,44 @@ class DeviceController {
 				img: fileName,
 			});
 
+			if (info) {
+				info = JSON.parse(info);
+				info.forEach((element) => {
+					DeviceInfo.create({
+						title: element.title,
+						description: element.description,
+						deviceId: device.id,
+					});
+				});
+			}
+
 			return res.status(200).json(device);
 		} catch (error) {
 			next(ApiError.badRequest(error.message));
 		}
 	}
 
-	remove(req, res) {
-		res.status(200).json('REMOVE DEVICE');
+	async getOneDevice(req, res, next) {
+		try {
+			const { id } = req.params;
+			const currentDevice = await Device.findOne({ where: { id } });
+
+			return res.status(200).json(currentDevice);
+		} catch (error) {
+			next(ApiError.badRequest(error.message));
+		}
+	}
+
+	//TODO: DELETE exchange to UPDATE
+	async remove(req, res) {
+		try {
+			const { id } = req.body;
+			const result = await Device.update({});
+
+			res.status(200).json(result);
+		} catch (error) {
+			next(ApiError.badRequest(error.message));
+		}
 	}
 }
 
