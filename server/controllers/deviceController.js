@@ -1,5 +1,5 @@
 const ApiError = require('../error/apiError');
-const { Brand, Device, DeviceInfo } = require('../models/models');
+const { Device, DeviceInfo } = require('../models/models');
 const path = require('path');
 const uuid = require('uuid');
 
@@ -84,9 +84,13 @@ class DeviceController {
 	}
 
 	async getOneDevice(req, res, next) {
+		console.log('🔴 ', req.params);
 		try {
 			const { id } = req.params;
-			const currentDevice = await Device.findOne({ where: { id } });
+			const currentDevice = await Device.findOne({
+				where: { id },
+				include: [{ model: DeviceInfo, as: 'info' }],
+			});
 
 			return res.status(200).json(currentDevice);
 		} catch (error) {
@@ -95,7 +99,7 @@ class DeviceController {
 	}
 
 	//TODO: DELETE exchange to UPDATE
-	async remove(req, res) {
+	async remove(req, res, next) {
 		try {
 			const { id } = req.body;
 			const result = await Device.update({});

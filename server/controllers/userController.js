@@ -1,62 +1,73 @@
 const jwt = require('jsonwebtoken');
 const ApiError = require('../error/apiError');
+const { User, Basket } = require('../models/models');
+const bcrypt = require('bcrypt');
 const users = require('../userData');
 
 class UserController {
-	login(req, res, next) {
-		const { login, passw } = req.body;
-		const { authorization } = req.headers;
+	async login(req, res, next) {
+		try {
+			const { email, password } = req.body;
+			// const { authorization } = req.headers;
 
-		console.log('😁', authorization);
+			const checkUser = await User.findOne({ where: { email } });
 
-		if (!login || !passw) {
-			return next(ApiError.badRequest('😠 Please enter login or password'));
+			if (!checkUser) {
+				return next(ApiError.forbidden('😠 User does not exist !'));
+			}
+
+			const checkPassword = await bcrypt.compare(password, checkUser.password);
+
+			if (!checkPassword) {
+				return next(ApiError.forbidden('🤮 credentials are not valid'));
+			}
+
+			const newUser = { email, role: 'TEST ROLE' };
+
+			const newToken = jwt.sign(newUser, process.env.PASSWORD, {
+				expiresIn: '1d',
+			});
+
+			// const [type, credentials] = authorization.split(' ');
+			// console.log('1>', credentials);
+			// const currentUser = jwt.verify(credentials, process.env.PASSWORD);
+
+			// console.log('result ', currentUser);
+			// const user = users.find((item) => currentUser.email === item.email);
+
+			// const newToken = jwt.sign(req.body, process.env.PASSWORD);
+			// res.setHeader('X-token', newToken);
+
+			res.status(200).json(newToken);
+		} catch (error) {
+			next(ApiError.forbidden(error.message));
 		}
-
-		if (!authorization) {
-			return next(ApiError.badRequest('🤮 credentials are not valid'));
-		}
-
-		const [type, credentials] = authorization.split(' ');
-		console.log('1>', credentials);
-		const currentUser = jwt.verify(credentials, process.env.PASSWORD);
-
-		console.log('result ', currentUser);
-		const user = users.find((item) => currentUser.email === item.email);
-
-		console.log('😺', user);
-
-		if (!user) {
-			return next(ApiError.badRequest('👎 no have such user'));
-		}
-
-		if (currentUser.password !== user.password) {
-			return next(ApiError.badRequest('💔 Password is incorrect'));
-		}
-
-		const newToken = jwt.sign(req.body, process.env.PASSWORD);
-		res.setHeader('X-token', newToken);
-
-		return next();
-		res.status(200).json('🟢 SUCCESS');
 	}
 
-	registration(req, res) {
-		const { login, password } = req.body;
+	async registration(req, res, next) {
+		const saltRounds = 5;
 
-		if (!login || !password) {
-			return next(ApiError.badRequest('😠 Please enter login or password'));
+		try {
+			const { email, password, role } = req.body;
+
+			const checkEmail = await User.findOne({ where: { email } });
+
+			if (checkEmail) {
+				return next(ApiError.forbidden('😠 User already exist.'));
+			}
+
+			const newPassword = await bcrypt.hash(password, saltRounds);
+
+			const newUser = await User.create({ email, password: newPassword });
+
+			const token = jwt.sign({ email }, process.env.PASSWORD, {
+				expiresIn: '1d',
+			});
+
+			res.status(200).json(newUser);
+		} catch (error) {
+			next(ApiError.forbidden(error.message));
 		}
-
-		const token = jwt.sign(users[0], process.env.PASSWORD, { expiresIn: '1d' });
-
-		setTimeout(() => {
-			const data = jwt.verify(token, process.env.PASSWORD);
-			console.log('⛑️', data);
-		}, 1000);
-
-		console.log('🤩 ', token);
-		res.status(200).json({ token });
 	}
 
 	checkAuth(req, res) {
