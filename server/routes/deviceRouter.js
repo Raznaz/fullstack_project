@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.get('/', deviceController.getAllDevices);
 router.get('/:id', deviceController.getOneDevice);
-router.post('/', [checkRoleMiddleware], deviceController.create);
+router.post('/', deviceController.create);
 router.delete('/', deviceController.remove);
 
 module.exports = router;

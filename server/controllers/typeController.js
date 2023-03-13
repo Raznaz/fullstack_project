@@ -12,15 +12,13 @@ class TypeController {
 	}
 
 	async create(req, res, next) {
-		const { name } = req.body;
-
-		if (!name) {
+		try {
+			const { name } = req.body;
+			const type = await Type.create({ name });
+			return res.status(200).json(type);
+		} catch (error) {
 			return next(ApiError.badRequest('🔸 Name is empty '));
 		}
-
-		const type = await Type.create({ name });
-
-		return res.status(200).json(type);
 	}
 
 	remove(req, res) {
