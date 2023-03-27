@@ -6,7 +6,7 @@ const users = require('../userData');
 
 const generateToken = (id, email, role) => {
 	const token = jwt.sign({ id, email, role }, process.env.SECRET_KEY, {
-		expiresIn: '1d',
+		expiresIn: '30d',
 	});
 
 	return token;

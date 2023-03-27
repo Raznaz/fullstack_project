@@ -1,12 +1,12 @@
 const express = require('express');
+const checkRole = require('../middleware/checkRoleMiddleware');
 const deviceController = require('../controllers/deviceController');
-const checkRoleMiddleware = require('../middleware/checkRoleMiddleware');
 
 const router = express.Router();
 
 router.get('/', deviceController.getAllDevices);
 router.get('/:id', deviceController.getOneDevice);
-router.post('/', deviceController.create);
-router.delete('/', deviceController.remove);
+router.post('/', [checkRole('ADMIN')], deviceController.create);
+router.delete('/', [checkRole('ADMIN')], deviceController.remove);
 
 module.exports = router;
