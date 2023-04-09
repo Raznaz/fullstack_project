@@ -1,1 +1,0 @@
-!function(){"use strict";document.body.prepend(function(t){const e=document.createElement("h1");return e.textContent="Проект собран на Webpack",e}())}();

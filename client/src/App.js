@@ -1,13 +1,17 @@
 import React, { Component } from 'react';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import AppRouter from './components/AppRouter';
+import Shop from './pages/Shop';
+import Auth from './pages/Auth';
 
-class App extends Component {
-	render() {
-		return (
-			<>
-				<h1 className='h1'>Application on REACT with Webpack</h1>
-			</>
-		);
-	}
-}
+const App = () => {
+	return (
+		<div>
+			<BrowserRouter>
+				<AppRouter />
+			</BrowserRouter>
+		</div>
+	);
+};
 
 export default App;
