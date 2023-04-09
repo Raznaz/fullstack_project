@@ -1,9 +1,6 @@
 const path = require('path');
 const HTMLWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-// const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
-
-const production = process.env.NODE_ENV === 'production';
 
 module.exports = {
 	// mode: production ? 'production' : 'development',
@@ -28,12 +25,7 @@ module.exports = {
 			{
 				test: /\.(scss|css)$/,
 				exclude: '/node_modules/',
-				use: [
-					MiniCssExtractPlugin.loader,
-					'css-loader',
-					'postcss-loader',
-					'sass-loader',
-				],
+				use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader', 'sass-loader'],
 			},
 			{
 				test: /\.(png|jpg|jpeg|gif)$/,
@@ -62,7 +54,6 @@ module.exports = {
 			// filename: production ? '[name].[contenthash].css' : '[name].css',
 			filename: 'main.[contenthash:8].css',
 		}),
-		// new ReactRefreshWebpackPlugin(),
 	],
 	// devtool: 'source-map',
 	devServer: {
