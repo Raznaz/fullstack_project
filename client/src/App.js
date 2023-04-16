@@ -6,11 +6,9 @@ import Auth from './pages/Auth';
 
 const App = () => {
 	return (
-		<div>
-			<BrowserRouter>
-				<AppRouter />
-			</BrowserRouter>
-		</div>
+		<BrowserRouter>
+			<AppRouter />
+		</BrowserRouter>
 	);
 };
 
