@@ -1,22 +1,3 @@
 @import url(./assets/fonts/fonts.scss);
-
-$font-size: 1rem;
-$font-color: #242424;
-
-html {
-    font-size: $font-size;
-    color: $font-color;
-    font-family: "Roboto";
-}
-
-.logo1 {
-    width: 10em;
-}
-
-.logo2 {
-    width: 10em;
-}
-
-.h1 {
-    color: blueviolet;
-}
+@import url(./assets/css/variables.scss);
+@import url(./assets/css/basics.scss);

@@ -1,0 +1,9 @@
+@import url(./../assets/css/basics.scss);
+
+.header {
+	height: 40px;
+	background: #000;
+	color: #fff;
+	position: fixed;
+	z-index: 100;
+}

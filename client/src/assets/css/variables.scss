@@ -1,0 +1,10 @@
+$roboto-font: 'Roboto', sans-serif;
+$bg: rgb(245, 18, 18);
+
+@mixin breakpoint($point) {
+	@if $point==md {
+		@media (min-width: $md) {
+			@content;
+		}
+	}
+}

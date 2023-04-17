@@ -5,9 +5,8 @@ import { authRoutes, publicRoutes } from './../routes';
 import { Context } from '..';
 
 const AppRouter = () => {
-	// const isAuth = true;
 	const { user } = useContext(Context);
-	console.log('💛 ', user.isAuth);
+	console.log('💚 ', user.isAuth);
 	return (
 		<Routes>
 			{user.isAuth &&
@@ -23,19 +22,3 @@ const AppRouter = () => {
 };
 
 export default AppRouter;
-
-// const AppRouter = () => {
-// 	const isAuth = false;
-// 	return (
-// 		<Switch>
-// 			{authRoutes.map(({ path, Component }) => {
-// 				return <Route key={path} path={path} component={Component} exact />;
-// 			})}
-// 			{publicRoutes.map(({ path, Component }) => {
-// 				return <Route key={path} path={path} component={Component} />;
-// 			})}
-// 		</Switch>
-// 	);
-// };
-
-// export default AppRouter;
