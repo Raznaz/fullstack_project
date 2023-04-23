@@ -1,7 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styles from './Header.module.scss';
 
 const Header = () => {
+	const [burgerMenu, setBurgerMenu] = useState(false);
+	const toggleClick = () => {
+		console.log('⭐ ');
+		burgerMenu ? setBurgerMenu(false) : setBurgerMenu(true);
+	};
 	return (
 		<>
 			<header className={styles.header}>
@@ -10,10 +15,10 @@ const Header = () => {
 						<a href='#' className={styles.header__logo}>
 							<img src='https://media.wfmynews2.com/assets/WFMY/images/c5c195f7-9a58-45e1-8e8e-9970c6c96c0f/c5c195f7-9a58-45e1-8e8e-9970c6c96c0f_1920x1080.jpg' alt='logo' />
 						</a>
-						<div className={styles.header__burger}>
+						<div className={`${styles.header__burger} ${burgerMenu ? styles.active : ''}`} onClick={toggleClick}>
 							<span></span>
 						</div>
-						<nav className={styles.header__menu}>
+						<nav className={`${styles.header__menu} ${burgerMenu ? styles.active : ''}`}>
 							<ul className={styles.header__list}>
 								<li>
 									<a href='#' className={styles.header__link}>
